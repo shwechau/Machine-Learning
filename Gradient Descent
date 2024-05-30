@@ -1,0 +1,121 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define the cost function
+def C(q):
+    return 10*q**2 - 1300*q + 47750
+
+#Define the range of values for q
+q_values = np.linspace(0,150,151)
+
+#Evaluate the cost function for each value of q
+cost_values = C(q_values)
+
+#find the value of q that minimises the cost function
+min_q = q_values[np.argmin(cost_values)]
+min_cost = C(min_q)
+
+#plot the cost function
+#plt.figure(figsize=(12,8))
+fig,ax = plt.subplots(figsize=(10,6))
+ax.plot(q_values, cost_values, label='cost function', color='red')
+
+#add a marker to highlight the min value
+ax.plot(min_q, min_cost, marker='o', color='black', label=f'Minimum value: {round(min_q,2)}, Cost: {round(min_cost,2)}')
+
+#Add a vertical line to highlight the value of q at the minimum
+ax.axvline(x=min_q, color='black', linestyle = '--', alpha=0.5)
+
+#add axis label and legend
+ax.set_xlabel('q')
+ax.set_ylabel('cost')
+plt.show()
+
+
+#Initializing q = 100 for gradient descent
+
+# Define the cost function
+def C(q):
+    return 10*q**2 - 1300*q + 47750
+
+#define initial value of q and learning rate
+q=100
+learning_rate = 0.01
+
+#compute the cost function and gradient at the current value of q
+cost = C(q)
+
+#plot the cost function and gradient
+q_range = np.arange(0,130,1)
+cost_values = C(q_range)
+
+fig,ax2=plt.subplots()
+color = 'tab:red'
+ax2.set_xlabel('q')
+ax2.set_ylabel('cost')
+ax2.plot(q_range,cost_values,label='cost function',color=color, linewidth=3)
+ax2.axvline(x=q, linestyle='--', label='current value of q', color='red')
+ax2.axhline(y=cost, linestyle='--', label='current cost', color='black')
+ax2.legend(loc='upper left')
+fig.suptitle('Initial cost: {:.2f}, at q: {:.2f}'.format(cost,q))
+plt.show()
+
+#Running few iterations of gradient descent to show convergence
+#Define the gradient of the cost function
+
+def dCdq(q):
+    return 20*q-1300
+
+#choose initial value of q and learning rate
+q=100
+learning_rate = 0.01
+
+#compute the cost function and gradient at current value of q
+cost = C(q)
+gradient = dCdq(q)
+
+#plot the cost function and current value of q
+q_range1 = np.arange(0,130,0.1)
+cost_values1 = C(q_range1)
+
+#plot the cost function and gradient
+fig,ax3 = plt.subplots()
+
+color='tab:green'
+ax3.set_xlabel('q')
+ax3.set_ylabel('cost')
+ax3.plot(q_range1, cost_values1, label='cost function', color=color)
+ax3.tick_params(axis='y', labelcolor=color)
+ax3.scatter(q,cost,s=100, label='Initial cost', color='blue')
+ax3.legend(loc='upper left')
+fig.suptitle('Gradient Descent')
+
+for i in range(2):
+    #update the value of q using gradient descent
+    q -= learning_rate*gradient
+    #compute the cost function at the new value of q
+    new_cost = C(q)
+    #display the change in parameter value and the cost for one iteration
+    delta_q = q-(q-learning_rate*gradient)
+    delta_cost = new_cost -cost
+    #update the current cost and gradient
+    cost = new_cost
+    gradient = dCdq(q)
+    #plot the update cost function and gradient
+    
+    ax3.scatter(q,cost, s=100, label=f'Iteration {i+1}',color=f'C{i+2}')
+    ax3.annotate(f'Iteration {i+1}: q={q:.2f},cost={cost:.2f}',
+                 xy =(q,cost),xytext=(q+10,cost+500),
+                 arrowprops=dict(facecolor='black',shrink=0.05))
+    ax3.legend()
+    
+    
+#Highlight the min cost and corresponding value of q
+min_q =q_range[np.argmin(cost_values)]
+min_cost=C(min_q)
+ax3.scatter(min_q, min_cost, s=100, label='Minimum value', color='violet')
+ax3.annotate(f'Min value: q={min_q:.2f}, cost={min_cost:.2f}',
+            xy=(min_q, min_cost),xytext=(min_q-20, min_cost+1500),
+            arrowprops=dict(facecolor='red'))
+ax3.legend()
+plt.show()
